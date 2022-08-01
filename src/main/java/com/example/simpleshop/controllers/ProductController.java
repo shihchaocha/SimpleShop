@@ -18,12 +18,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductTagRepository productTagRepository;
-
     @RequestMapping(value="/product",method = RequestMethod.GET)
     public ResponseEntity<List<Product>> getAllProducts() {
         try {

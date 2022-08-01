@@ -2,11 +2,7 @@ package com.example.simpleshop.controllers;
 
 import com.example.simpleshop.models.LineItem;
 import com.example.simpleshop.models.MessageResponse;
-import com.example.simpleshop.models.Product;
 import com.example.simpleshop.models.SaleOrder;
-import com.example.simpleshop.repo.LineItemRepository;
-import com.example.simpleshop.repo.ProductRepository;
-import com.example.simpleshop.repo.SaleOrderRepository;
 import com.example.simpleshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
