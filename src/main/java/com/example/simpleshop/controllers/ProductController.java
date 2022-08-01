@@ -3,6 +3,7 @@ package com.example.simpleshop.controllers;
 import com.example.simpleshop.models.*;
 import com.example.simpleshop.repo.ProductRepository;
 import com.example.simpleshop.repo.ProductTagRepository;
+import com.example.simpleshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ import java.util.Optional;
 @RequestMapping(value="api/v1")
 public class ProductController {
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -22,61 +26,68 @@ public class ProductController {
 
     @RequestMapping(value="/product",method = RequestMethod.GET)
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products= productRepository.findAll();
-        return ResponseEntity.ok(products);
+        try {
+            List<Product> products = productService.getAllProducts();
+            return ResponseEntity.ok(products);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @RequestMapping(value="/productbytag",method = RequestMethod.GET)
     public ResponseEntity<List<Product>> getAllProductsByTag(@RequestParam String tag) {
-        List<Product> products = productRepository.findByTag(tag);
-        if(products!=null) {
-            return ResponseEntity.ok(products);
-        } else {
-            return (ResponseEntity<List<Product>>) ResponseEntity.notFound();
+        try {
+            List<Product> products = productService.getAllProductsByTag(tag);
+            if (products != null) {
+                return ResponseEntity.ok(products);
+            } else {
+                throw new Exception("db access error");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @RequestMapping(value="/product", method = RequestMethod.POST)
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        Product newProduct = productRepository.save(product);
-        return ResponseEntity.ok(newProduct);
+        try {
+            Product newProduct = productService.addProduct(product);
+            return ResponseEntity.ok(newProduct);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @RequestMapping(value="/product/{productsku}", method = RequestMethod.DELETE)
     public ResponseEntity<MessageResponse> deleteProduct(@PathVariable("productsku") String sku) {
-        if (productRepository.existsById(sku))
-            productRepository.deleteById(sku);
-        return ResponseEntity.ok(new MessageResponse(200,"delete success"));
+        try {
+            productService.deleteProduct(sku);
+            return ResponseEntity.ok(new MessageResponse(200,"delete product success"));
+         } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @RequestMapping(value="/tag/{tagid}", method = RequestMethod.DELETE)
     public ResponseEntity<MessageResponse> deleteProductTag(@PathVariable("tagid") Integer iid) {
-        if(productTagRepository.existsById(iid))
-            productTagRepository.deleteById(iid);
-        return ResponseEntity.ok(new MessageResponse(200,"delete success"));
+        try {
+            productService.deleteProductTag(iid);
+            return ResponseEntity.ok(new MessageResponse(200,"delete product tag success"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
     @RequestMapping(value="/product/{productsku}", method = RequestMethod.POST)
     public ResponseEntity<ProductTag> addProductTag(@PathVariable("productsku") String sku, @RequestParam String tag) {
-        Optional<Product> product = productRepository.findById(sku);
-        if(product.isPresent()) {
-            Product p = product.get();
-            if(p.getItems()==null) {
-                p.setItems(new ArrayList<ProductTag>());
-            }
-            List<ProductTag> items = p.getItems();
-            for(ProductTag pt: items) {
-                if(pt.getTag().equals(tag))
-                    return ResponseEntity.ok(pt);
-            }
-            ProductTag pt = new ProductTag();
-            pt.setProduct(p);
-            pt.setTag(tag);
-            ProductTag newProductTag = productTagRepository.save(pt);
+        try {
+            ProductTag newProductTag = productService.addProductTag(sku,tag);
+            if(newProductTag==null)
+                return ResponseEntity.notFound().build();
             return ResponseEntity.ok(newProductTag);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
