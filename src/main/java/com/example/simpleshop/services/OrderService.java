@@ -1,21 +1,15 @@
 package com.example.simpleshop.services;
 
 import com.example.simpleshop.models.LineItem;
-import com.example.simpleshop.models.MessageResponse;
 import com.example.simpleshop.models.Product;
 import com.example.simpleshop.models.SaleOrder;
 import com.example.simpleshop.repo.LineItemRepository;
 import com.example.simpleshop.repo.ProductRepository;
 import com.example.simpleshop.repo.SaleOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.time.LocalDateTime;
 import java.util.List;
