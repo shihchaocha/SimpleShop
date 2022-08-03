@@ -28,6 +28,18 @@ public class ProductController {
         }
     }
 
+    @RequestMapping(value="/product/{productsku}", method = RequestMethod.GET)
+    public ResponseEntity<Product> getProductbyID(@PathVariable("productsku") String sku) {
+        try {
+            Product product = productService.getProductbyID(sku);
+            if(product == null)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(product);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @RequestMapping(value="/productbytag",method = RequestMethod.GET)
     public ResponseEntity<List<Product>> getAllProductsByTag(@RequestParam String tag) {
         try {

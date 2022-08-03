@@ -87,7 +87,7 @@ public class OrderService {
                 if(oproduct.isPresent()) {
                     Product product = oproduct.get();
                     int quantity = product.getQuantity();
-                    if(quantity>item.getQuantity()) {
+                    if(quantity>=item.getQuantity()) {
                         product.setQuantity(quantity-item.getQuantity());
                         productRepository.save(product);
                     } else {

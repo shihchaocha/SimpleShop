@@ -27,6 +27,14 @@ public class ProductService {
         return products;
     }
 
+    public Product getProductbyID(String sku) {
+        Optional<Product> product = productRepository.findById(sku);
+        if(product.isPresent())
+            return product.get();
+        return null;
+    }
+
+
     public List<Product> getAllProductsByTag(String tag) {
         List<Product> products = productRepository.findByTag(tag);
         if(products!=null) {
